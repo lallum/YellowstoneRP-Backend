@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: yellowstonerp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: yellowstonerp
+      POSTGRES_PASSWORD: yellowstonerp_password
+      POSTGRES_DB: yellowstonerp
+    ports:
+      - "5432:5432"
+    volumes:
+      - yellowstonerp_pg:/var/lib/postgresql/data
+volumes:
+  yellowstonerp_pg:
