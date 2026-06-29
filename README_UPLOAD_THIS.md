@@ -1,44 +1,34 @@
-# YellowstoneRP Backend Railway Fix
+YellowstoneRP Backend Railway Dockerfile Fix
 
-Upload every file and folder in this ZIP to the root of your GitHub repo:
+UPLOAD THESE FILES TO THE ROOT OF YOUR GITHUB REPO:
+- Dockerfile
+- package.json
+- railway.json
+- nixpacks.toml
+- Procfile
+- .dockerignore
 
-`lallum/YellowstoneRP-Backend`
+Do NOT upload this folder itself. Upload the files inside it.
 
-Replace the existing files when GitHub asks.
+VERY IMPORTANT:
+Your repo must still keep the existing dist folder:
+- dist/index.js
+- dist/db.js
+- dist/middleware.js
 
-## What this fixes
+DELETE OR IGNORE:
+- package-lock.json
 
-- Adds a valid `package-lock.json` so Railway can use `npm ci`.
-- Uses Node 20.
-- Uses the uploaded `dist` folder, so Railway does not need TypeScript/tsc to build.
-- Ensures `express`, `cors`, `helmet`, `dotenv`, `pg`, and `zod` install as production dependencies.
-- Makes `/health` return HTTP 200 as long as the server is alive, so Railway healthcheck will not fail just because Supabase is temporarily unreachable.
-- Adds `/health/db` for checking Supabase separately.
+The Dockerfile intentionally ignores package-lock.json because your current GitHub package-lock appears broken/empty.
+Railway should now show it is using Dockerfile, not Nixpacks.
 
-## Railway variables needed
+Expected Railway build log:
+- Using Dockerfile
+- npm install --omit=dev --no-audit --no-fund --no-package-lock
+- Runtime dependencies installed OK
+- node dist/index.js
 
-Set these in Railway > YellowstoneRP-Backend > Variables:
+After deploy, test:
+https://YOUR-RAILWAY-DOMAIN.up.railway.app/health
 
-```env
-NODE_ENV=production
-PORT=3100
-DATABASE_URL=your_supabase_postgres_connection_string_with_sslmode_require
-YELLOWSTONERP_API_KEY=make_a_long_private_key
-YELLOWSTONERP_SERVER_ID=yellowstone-rp-main
-ADMIN_PASSWORD=RedBull1
-PROPERTY_DOOR_CODE_SECRET=make_a_long_private_secret
-VEHICLE_ENTRY_CODE_SECRET=make_a_long_private_secret
-COURT_DISCORD_WEBHOOK_URL=optional_discord_webhook
-JAIL_DISCORD_WEBHOOK_URL=optional_discord_webhook
-```
-
-## After upload
-
-1. Commit changes to the `main` branch.
-2. Redeploy on Railway.
-3. Test:
-   - `https://your-railway-domain/health`
-   - `https://your-railway-domain/health/db`
-
-`/health` should be used for Railway healthcheck.
-`/health/db` is for checking Supabase/PostgreSQL.
+If you still see Express missing, Railway is not using the Dockerfile or the files were uploaded into a subfolder by mistake.

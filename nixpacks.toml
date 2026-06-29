@@ -1,11 +1,15 @@
+# This project now deploys with Dockerfile on Railway.
+# Railway will use Dockerfile from the repo root.
+# Keep this file only as a fallback; it should not be used while Dockerfile exists.
+
 [phases.setup]
 nixPkgs = ["nodejs_20", "npm-10_x"]
 
 [phases.install]
-cmds = ["npm ci --omit=dev --no-audit --no-fund"]
+cmds = ["echo Dockerfile deployment should be used instead of Nixpacks"]
 
 [phases.build]
-cmds = ["echo Using uploaded dist folder"]
+cmds = ["echo Dockerfile deployment should be used instead of Nixpacks"]
 
 [start]
 cmd = "node dist/index.js"
