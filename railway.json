@@ -5,7 +5,7 @@
     "buildCommand": "echo Using uploaded dist folder"
   },
   "deploy": {
-    "startCommand": "npm run start",
+    "startCommand": "node dist/index.js",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
