@@ -2,10 +2,10 @@
 nixPkgs = ["nodejs_20", "npm-10_x"]
 
 [phases.install]
-cmds = ["npm install --include=dev --no-audit --no-fund"]
+cmds = ["npm install --omit=dev --no-audit --no-fund"]
 
 [phases.build]
-cmds = ["npm run build"]
+cmds = ["echo Using uploaded dist folder"]
 
 [start]
 cmd = "npm run start"
