@@ -13,10 +13,12 @@ function shouldUseSsl() {
 
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  max: Number(process.env.DB_POOL_MAX ?? 5),
+  max: Number(process.env.DB_POOL_MAX ?? 8),
   idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT_MS ?? 30000),
   connectionTimeoutMillis: Number(process.env.DB_CONNECTION_TIMEOUT_MS ?? 10000),
-  application_name: process.env.YELLOWSTONERP_SERVER_ID ?? 'yellowstonerp-backend',
+  application_name: process.env.STONEPINERP_SERVER_ID
+    ?? process.env.YELLOWSTONERP_SERVER_ID
+    ?? 'stonepinerp-backend',
   ssl: shouldUseSsl() ? { rejectUnauthorized: false } : undefined
 });
 

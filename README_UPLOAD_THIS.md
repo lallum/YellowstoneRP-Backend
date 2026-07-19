@@ -1,34 +1,15 @@
-YellowstoneRP Backend Railway Dockerfile Fix
+UPLOAD THIS FOLDER TO RAILWAY
+=============================
 
-UPLOAD THESE FILES TO THE ROOT OF YOUR GITHUB REPO:
-- Dockerfile
-- package.json
-- railway.json
-- nixpacks.toml
-- Procfile
-- .dockerignore
+This is the StonePineRP-compatible backend that keeps the existing YellowstoneRP
+PostgreSQL schema internally.
 
-Do NOT upload this folder itself. Upload the files inside it.
+Before deployment:
+1. Back up Supabase.
+2. Run database/YellowstoneRP_Database_Schema.sql only for a NEW empty database.
+3. For an existing database, run migrations/20260719_stonepine_identity_jobs_duty.sql.
+4. Configure Railway Variables from .env.example.
+5. Deploy with the included Dockerfile.
+6. Check /health and /health/db.
 
-VERY IMPORTANT:
-Your repo must still keep the existing dist folder:
-- dist/index.js
-- dist/db.js
-- dist/middleware.js
-
-DELETE OR IGNORE:
-- package-lock.json
-
-The Dockerfile intentionally ignores package-lock.json because your current GitHub package-lock appears broken/empty.
-Railway should now show it is using Dockerfile, not Nixpacks.
-
-Expected Railway build log:
-- Using Dockerfile
-- npm install --omit=dev --no-audit --no-fund --no-package-lock
-- Runtime dependencies installed OK
-- node dist/index.js
-
-After deploy, test:
-https://YOUR-RAILWAY-DOMAIN.up.railway.app/health
-
-If you still see Express missing, Railway is not using the Dockerfile or the files were uploaded into a subfolder by mistake.
+Do not upload a real .env file or place database secrets in the Arma Workshop addon.

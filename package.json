@@ -1,12 +1,12 @@
 {
-  "name": "yellowstonerp-backend",
-  "version": "1.0.1-railway-dockerfile-fix",
+  "name": "stonepinerp-yellowstone-backend",
+  "version": "2.0.0-stonepine-integration",
   "private": true,
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "build": "echo Build skipped - using uploaded dist folder",
+    "build": "cp src/index.js dist/index.js && cp src/db.js dist/db.js && cp src/middleware.js dist/middleware.js",
     "health": "node -e \"import('./dist/index.js')\""
   },
   "dependencies": {
@@ -16,5 +16,6 @@
     "helmet": "8.0.0",
     "pg": "8.13.1",
     "zod": "3.24.1"
-  }
+  },
+  "description": "StonePineRP Glenwood API using the existing YellowstoneRP PostgreSQL schema"
 }

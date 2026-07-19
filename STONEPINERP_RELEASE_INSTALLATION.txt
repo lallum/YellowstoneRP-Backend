@@ -1,0 +1,139 @@
+STONEPINERP GLENWOOD INTEGRATED RELEASE
+Version: 2.0.0-backend-terminals
+Prepared: 19 July 2026
+
+CONTENTS
+========
+1. StonePineRP_Integrated_2.0.0.zip
+   Workbench project, Glenwood world, character UI, backend bridge, player-owned RPC,
+   jobs, duty actions, terminal placements and StonePine branding source asset.
+
+2. YellowstoneRP_Backend_StonePine_2.0.0.zip
+   Railway/Node.js backend. It intentionally keeps the existing YellowstoneRP internal
+   database identity while exposing StonePine-branded /v2 routes.
+
+3. StonePine_Terminal_System_1.4.1.zip
+   Local APL-SA Cyber Scenarios AER adaptation with the Reforger 1.7 edit-box repair,
+   StonePine metadata/previews and original attribution.
+
+IMPORTANT BEFORE INSTALLING
+===========================
+- Close Arma Reforger, Workbench and Arma Reforger Tools.
+- Back up the existing StonePineRP project, Railway deployment and Supabase database.
+- Do not publish a filled BackendRuntime.json, DATABASE_URL or API key.
+- Do not keep two active copies of the Cyber Scenarios/StonePine Terminal addon.
+
+A. INSTALL THE TERMINAL DEPENDENCY
+==================================
+1. Open:
+   C:\Users\Shadow\Documents\My Games\ArmaReforger\addons
+2. Move the old CyberScenarios-AER_620615238DF82D12 folder outside the addons directory.
+3. Extract StonePine_Terminal_System_1.4.1.zip into the addons directory.
+4. Confirm the resulting path is:
+   ...\ArmaReforger\addons\CyberScenarios-AER_620615238DF82D12\addon.gproj
+5. The addon GUID remains 620615238DF82D12 so the StonePine dependency resolves.
+6. Workshop updates can overwrite a locally adapted addon. Keep the release ZIP as a backup.
+
+B. INSTALL THE STONEPINERP WORKBENCH PROJECT
+=============================================
+1. Back up the current folder:
+   C:\Users\Shadow\Documents\My Games\ArmaReforgerWorkbench\addons\StonePineRP
+2. Replace it with the StonePineRP folder from StonePineRP_Integrated_2.0.0.zip.
+3. Confirm this file exists:
+   ...\ArmaReforgerWorkbench\addons\StonePineRP\addon.gproj
+4. Open Arma Reforger Tools and select StonePineRP, not the terminal addon.
+5. Allow the full ResourceDB scan to finish.
+6. In Script Editor use Shift+F7 to compile Game scripts before opening/saving the main world.
+
+C. UPDATE THE EXISTING SUPABASE DATABASE
+========================================
+For an existing YellowstoneRP database:
+1. Create a Supabase backup.
+2. Do NOT rerun the full original schema.
+3. Run only:
+   migrations/20260719_stonepine_identity_jobs_duty.sql
+
+For a completely empty database:
+1. Run database/YellowstoneRP_Database_Schema.sql.
+2. Then run migrations/20260719_stonepine_identity_jobs_duty.sql.
+
+The migration is designed to keep YellowstoneRP table names and existing records. It adds
+biography storage, name-change requests, richer job sessions, job definitions and duty stations.
+
+D. DEPLOY THE BACKEND TO RAILWAY
+================================
+1. Extract YellowstoneRP_Backend_StonePine_2.0.0.zip.
+2. Deploy the YellowstoneRP-Backend-main folder to the existing Railway service.
+3. Set Railway Variables:
+   DATABASE_URL=<Supabase PostgreSQL connection string>
+   DATABASE_SSL=true
+   STONEPINERP_API_KEY=<long private random key>
+   STONEPINERP_SERVER_ID=stonepine-rp-glenwood-main
+   STONEPINERP_ALLOW_TEST_WHITELIST_BYPASS=false
+4. Legacy YELLOWSTONERP_API_KEY and YELLOWSTONERP_SERVER_ID aliases remain supported.
+5. Confirm these URLs return successfully:
+   /health
+   /health/db
+   /v2/status
+
+E. CONNECT THE DEDICATED GAME SERVER
+====================================
+1. Copy:
+   StonePineRP\server\StonePineRP_BackendRuntime.example.json
+2. Place the copy in the dedicated-server profile as:
+   $profile:StonePineRP/BackendRuntime.json
+3. Fill in:
+   apiBaseUrl = Railway public service URL
+   apiKey = same STONEPINERP_API_KEY used by Railway
+   serverId = stonepine-rp-glenwood-main
+   enabled = true
+4. Never place this filled file inside a Workshop upload or public ZIP.
+
+F. WHITELIST POLICE/FIRE/EMS/PRISON
+====================================
+The in-world police testing bypass is disabled in this release.
+Whitelisted jobs require an active role_assignments row in PostgreSQL.
+
+Example after finding the resident character UUID:
+
+INSERT INTO public.role_assignments(character_id, role_key, rank_key, active)
+VALUES ('CHARACTER-UUID-HERE', 'police', 'officer', true);
+
+Valid role_key values in the current schema include police, fire, ems and prison.
+Keep STONEPINERP_ALLOW_TEST_WHITELIST_BYPASS=false on a public server.
+
+G. REQUIRED TEST ORDER
+======================
+1. Workbench script compile: no red Game module errors.
+2. Load StonePineRP world without saving over it if a dependency is missing.
+3. First join with no database character:
+   - backend bootstrap completes;
+   - character-creation UI opens;
+   - Create Character sends a player-owned reliable RPC to the server;
+   - a players row and characters row appear in Supabase.
+4. Leave and rejoin:
+   - existing character loads from /v2/game/character-bootstrap;
+   - creation UI does not reopen;
+   - StonePine character code, name, biography and selected job load.
+5. Select a public job at the mall terminal and clock in/out.
+6. Test police with a correctly assigned role, then test an unassigned player is blocked.
+7. Submit a name-change request and approve/reject it through the backend/admin workflow.
+8. Repeat on a dedicated server with a separate client, then test a full server restart.
+
+WHAT IS INCLUDED
+================
+- StonePine-branded character/profile wording and Glenwood logo source.
+- Database bootstrap, register, profile update and name-change request routes.
+- Player-owned reliable RPC path from client UI to authoritative server.
+- Public jobs and clock-in/clock-out backend hooks.
+- Police duty terminal and reusable Fire/EMS/Prison action classes.
+- Cyber/AER laptop visuals at airport registration, police and mall Job Centre.
+- Railway configuration examples and Supabase migration.
+
+VALIDATION LIMITS
+=================
+The Node.js files pass syntax validation and the release archives pass ZIP integrity checks.
+Enfusion Workbench and a live cross-play dedicated server are not available in this environment,
+so the included Enforce scripts and world resources must still be compiled and tested locally.
+This package is an integrated development release, not proof that every requested life-RP system
+(phone, vehicles, properties, CAD, court, full economy and every job gameplay loop) is complete.
